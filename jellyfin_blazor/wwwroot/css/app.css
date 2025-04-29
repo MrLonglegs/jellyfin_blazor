@@ -4,6 +4,10 @@
     color: rgba(255, 255, 255, 0.8)
 }
 
+body {
+    background-color: #101010;
+}
+
 .valid.modified:not([type=checkbox]) {
     outline: 1px solid #26b050;
 }

@@ -1,47 +1,14 @@
-﻿@page "/"
+﻿@page "/home"
+
+@using jellyfin_blazor.Services
+
 @inject NavigationManager Navigation
-@inject HttpClient Http;
+@inject HttpService Http;
 
 <PageTitle>Home</PageTitle>
 
-@if (isAuthenticated)
-{
-	<h3>Welcome to the Home Page</h3>
-	<p>You are logged in!</p>
-}
+<h1>Hi There!</h1>
 
 @code {
-	[CascadingParameter]
-	protected bool isAuthenticated { get; set; }
-
-	protected override async Task OnInitializedAsync()
-	{
-		isAuthenticated = await CheckAuthentication();
-		if (!isAuthenticated)
-		{
-			Navigation.NavigateTo("/login");
-		}
-		else
-		{
-			Console.WriteLine("User is authenticated.");
-		}
-	}
-
-	private async Task<bool> CheckAuthentication()
-	{
-		try
-		{
-			var response = await Http.GetAsync("/System/Info");
-			if (response.StatusCode != System.Net.HttpStatusCode.Unauthorized)
-			{
-				return true;
-			}
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine($"Error fetching data: {ex.Message}");
-			return false;
-		}
-		return false;
-	}
+	
 }

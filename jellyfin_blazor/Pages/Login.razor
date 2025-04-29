@@ -1,65 +1,83 @@
 ﻿@page "/login"
-@inject NavigationManager Navigation
-@inject HttpClient Http
+@layout EmptyLayout
 
+@using jellyfin_blazor.Identity
+@using jellyfin_blazor.Services
+
+@inject NavigationManager Navigation
+@inject AuthenticationContext AuthenticationContext
 
 <body>
 	<div class="login-form">
 		<h1>Please login</h1>
 		<input id="usernameInput" type="text" placeholder="Username" @bind="username" />
 		<input id="passwordInput" type="password" placeholder="Password" @bind="password" />
-		<button class="loginButton" onclick="@login">Login</button>
+		<button class="loginButton" onclick="@OnLoginButtonClick">Login</button>
 	</div>
 </body>
 <style>
-	body {
-		background-color: #101010;
-	}
-
 	.login-form {
-		max-width: 400px;
-		min-height: 300px;
-		margin: auto;
-		margin-top: 15%;
-		text-align: center;
-		border-style: none;
-		border-radius: 10px;
+	max-width: 400px;
+	min-height: 300px;
+	margin: auto;
+	margin-top: 15%;
+	text-align: center;
+	border-style: none;
+	border-radius: 10px;
 	}
 
-		.login-form * {
-			width: 80%;
-			padding: 10px;
-			border-style: none;
-			border-radius: 10px;
-		}
+	.login-form * {
+	width: 80%;
+	padding: 10px;
+	border-style: none;
+	border-radius: 10px;
+	}
 
-		.login-form h1 {
-			margin: auto;
-			font-size: 26px;
-			font-weight: 400
-		}
+	.login-form h1 {
+	margin: auto;
+	font-size: 26px;
+	font-weight: 400
+	}
 
-		.login-form input {
-			margin: 5px 0;
-			box-sizing: border-box;
-			background: #292929;
-		}
+	.login-form input {
+	margin: 5px 0;
+	box-sizing: border-box;
+	background: #292929;
+	}
 
-		.login-form .loginButton {
-			margin-top: 15px;
-			padding: 10px;
-			background-color: #007bff;
-			color: white;
-			cursor: pointer;
-			font-weight: 600;
-		}
+	.login-form .loginButton {
+	margin-top: 15px;
+	padding: 10px;
+	background-color: #007bff;
+	color: white;
+	cursor: pointer;
+	font-weight: 600;
+	}
 </style>
 @code {
 	private string username = String.Empty;
 	private string password = String.Empty;
 
-	private bool login()
+	private async void OnLoginButtonClick()
 	{
-		throw new NotImplementedException();
+		if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+		{
+			Console.WriteLine("Username or password is empty.");
+			return;
+		}
+		else
+		{
+			if (await AuthenticationContext.AuthenticateUser(username, password))
+			{
+				Console.WriteLine("Login successful.");
+				Navigation.NavigateTo("/");
+			}
+			else
+			{
+				Console.WriteLine("Login failed.");
+				Navigation.NavigateTo("/");
+				return;
+			}
+		}
 	}
 }

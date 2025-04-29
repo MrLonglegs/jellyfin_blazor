@@ -1,0 +1,27 @@
+﻿@page "/"
+@page "/_authstatecheck"
+
+@layout EmptyLayout
+
+@using jellyfin_blazor.Identity
+@using jellyfin_blazor.Services
+
+@inject NavigationManager Navigation
+@inject HttpService Http;
+
+@code {
+	protected override async Task OnInitializedAsync()
+	{
+		var request = new HttpRequestMessage(HttpMethod.Get, "/System/Info");
+		if ((await Http.SendAsync(request, CancellationToken.None)).IsSuccessStatusCode)
+		{
+			// If the user is authenticated, navigate to the home page
+			Navigation.NavigateTo("/home");
+		}
+		else
+		{
+			// If the user is not authenticated, navigate to the login page
+			Navigation.NavigateTo("/login");
+		}
+	}
+}
