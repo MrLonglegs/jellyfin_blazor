@@ -1,14 +1,16 @@
-﻿@page "/home"
+﻿@page "/"
 
 @using jellyfin_blazor.Services
+@using jellyfin_blazor.Identity
 
 @inject NavigationManager Navigation
 @inject HttpService Http;
+@inject AuthenticationContext AuthContext
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hi There!</h1>
+<p>Hello There, @Username</p>
 
 @code {
-	
+	string Username { get => AuthContext.Identity?.Name ?? "Guest"; }
 }

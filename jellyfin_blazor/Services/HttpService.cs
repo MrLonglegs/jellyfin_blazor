@@ -31,12 +31,12 @@ namespace jellyfin_blazor.Services
 
             var response =  await base.SendAsync(request, cancellationToken);
 
-            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-            {
-                Console.WriteLine("Unauthorized request. Redirecting to login");
-                _navigationManager.NavigateTo("/login");
-                return response;
-            }
+            //if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            //{
+            //    Console.WriteLine("Unauthorized request. Redirecting to login");
+            //    _navigationManager.NavigateTo("/login");
+            //    return response;
+            //}
             return response;
         }
 

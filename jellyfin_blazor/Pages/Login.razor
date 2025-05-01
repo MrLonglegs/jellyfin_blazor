@@ -1,11 +1,12 @@
 ﻿@page "/login"
-@layout EmptyLayout
+@layout EmptyLayoutWithAuthCheck
 
 @using jellyfin_blazor.Identity
 @using jellyfin_blazor.Services
 
 @inject NavigationManager Navigation
 @inject AuthenticationContext AuthenticationContext
+@inject HttpService Http
 
 <body>
 	<div class="login-form">
@@ -75,9 +76,11 @@
 			else
 			{
 				Console.WriteLine("Login failed.");
-				Navigation.NavigateTo("/");
+				Navigation.NavigateTo("/login");
 				return;
 			}
 		}
 	}
+
+	
 }

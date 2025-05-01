@@ -1,4 +1,5 @@
-﻿using jellyfin_blazor.Services;
+﻿using System.Reflection;
+using jellyfin_blazor.Services;
 using Newtonsoft.Json;
 
 namespace jellyfin_blazor.Identity
@@ -12,6 +13,7 @@ namespace jellyfin_blazor.Identity
             BaseAddress = new Uri("https://jellyfin.brueffer24.de/"),
             Timeout = TimeSpan.FromSeconds(30)
         };
+        public dynamic Identity { get; private set; }
 
         public AuthenticationContext(ILocalStorage localStorage)
         {
@@ -34,11 +36,15 @@ namespace jellyfin_blazor.Identity
                 var content = await result.Content.ReadAsStringAsync();
                 _authPayload = JsonConvert.DeserializeObject<dynamic>(content);
                 _localStorage.SetItemAsync("AuthPayload", content);
+
+                await ReceiveIdentityFromServerAsync();
+
                 return true;
             }
             else
             {
-                throw new Exception("Authentication failed");
+                Console.WriteLine("Authentication failed");
+                return false;
             }
         }
         public async Task<string> GetAccessToken()
@@ -52,18 +58,45 @@ namespace jellyfin_blazor.Identity
                     return String.Empty;
                 }
                 _authPayload = JsonConvert.DeserializeObject<dynamic>(content);
+
             }
+
             return _authPayload.AccessToken ?? String.Empty;
         }
 
         public async Task<string> GetDeviceID()
         {
             var deviceID = await _localStorage.GetItemAsync("DeviceID");
-            if (String.IsNullOrEmpty(deviceID)) {
+            if (String.IsNullOrEmpty(deviceID))
+            {
                 deviceID = Guid.NewGuid().ToString();
                 await _localStorage.SetItemAsync("DeviceID", deviceID);
             }
             return deviceID;
+        }
+
+        public async Task<bool> ReceiveIdentityFromServerAsync()
+        {
+            var deviceID = await GetDeviceID();
+            var accessToken = await GetAccessToken();
+
+            var request = new HttpRequestMessage(HttpMethod.Get, "/Users/Me");
+            request.Headers.Add("Authorization", $"MediaBrowser Client=\"jellyfin_blazor\", Device=\"Jellyfin Blazor WebClient\", DeviceId=\"{deviceID}\", Version=\"1.0.0\", Token=\"{accessToken}\"");
+
+            var result = await _httpClient.SendAsync(request, CancellationToken.None);
+            if (result.IsSuccessStatusCode)
+            {
+                var content = await result.Content.ReadAsStringAsync();
+                Identity = JsonConvert.DeserializeObject<dynamic>(content);
+
+                if (Identity == null)
+                {
+                    Console.WriteLine("Failed to get User Identity");
+                    return false;
+                }
+                return true;
+            }
+            else { return false; }
         }
     }
 }

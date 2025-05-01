@@ -1,5 +1,5 @@
-﻿@page "/"
-@page "/_authstatecheck"
+﻿@page "/_authstatecheck"
+@page "/_authstatecheck/{RedirectUri}"
 
 @layout EmptyLayout
 
@@ -8,15 +8,24 @@
 
 @inject NavigationManager Navigation
 @inject HttpService Http;
+@inject AuthenticationContext AuthContext
+
+@functions {
+
+}
 
 @code {
+	[Parameter]
+	public string RedirectUri { get; set; }
+
 	protected override async Task OnInitializedAsync()
 	{
-		var request = new HttpRequestMessage(HttpMethod.Get, "/System/Info");
-		if ((await Http.SendAsync(request, CancellationToken.None)).IsSuccessStatusCode)
+
+		if (await AuthContext.ReceiveIdentityFromServerAsync())
 		{
 			// If the user is authenticated, navigate to the home page
-			Navigation.NavigateTo("/home");
+			if (String.IsNullOrEmpty(RedirectUri)) { Navigation.NavigateTo("/"); }
+			else { Navigation.NavigateTo(RedirectUri); } 
 		}
 		else
 		{

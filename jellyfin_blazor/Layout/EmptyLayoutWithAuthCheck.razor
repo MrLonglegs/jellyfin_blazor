@@ -1,0 +1,22 @@
+﻿@inherits LayoutComponentBase
+
+@using jellyfin_blazor.Identity
+@using jellyfin_blazor.Services
+
+@inject NavigationManager Navigation
+@inject HttpService Http;
+
+@Body
+
+
+@code {
+	protected override async Task OnInitializedAsync()
+	{
+		var request = new HttpRequestMessage(HttpMethod.Get, "/Users/Me");
+		if ((await Http.SendAsync(request, CancellationToken.None)).IsSuccessStatusCode)
+		{
+			// If the user is authenticated, navigate to the home page
+			Navigation.NavigateTo("/");
+		}
+	}
+}
