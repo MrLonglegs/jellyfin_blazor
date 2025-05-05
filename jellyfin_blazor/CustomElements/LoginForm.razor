@@ -1,11 +1,10 @@
-﻿@page "/login"
-@layout EmptyLayoutWithAuthCheck
+﻿@layout EmptyLayoutWithAuthCheck
 
 @using jellyfin_blazor.Identity
 @using jellyfin_blazor.Services
 
 @inject NavigationManager Navigation
-@inject AuthenticationContext AuthenticationContext
+@inject IdentityContext AuthenticationContext
 @inject HttpService Http
 
 <body>
@@ -56,6 +55,9 @@
 	}
 </style>
 @code {
+	[Parameter]
+	public EventCallback<bool> OnSuccess { get; set; }
+
 	private string username = String.Empty;
 	private string password = String.Empty;
 
@@ -71,12 +73,14 @@
 			if (await AuthenticationContext.AuthenticateUser(username, password))
 			{
 				Console.WriteLine("Login successful.");
-				Navigation.NavigateTo("/");
+				//Navigation.NavigateTo("/");
+				await OnSuccess.InvokeAsync(true);
+				return;
 			}
 			else
 			{
 				Console.WriteLine("Login failed.");
-				Navigation.NavigateTo("/login");
+				await OnSuccess.InvokeAsync(false);
 				return;
 			}
 		}

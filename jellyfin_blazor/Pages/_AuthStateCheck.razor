@@ -1,36 +1,49 @@
-﻿@page "/_authstatecheck"
-@page "/_authstatecheck/{RedirectUri}"
-
-@layout EmptyLayout
+﻿@layout EmptyLayout
 
 @using jellyfin_blazor.Identity
 @using jellyfin_blazor.Services
+@using jellyfin_blazor.CustomElements
 
 @inject NavigationManager Navigation
 @inject HttpService Http;
-@inject AuthenticationContext AuthContext
+@inject IdentityContext IdentityContext
 
-@functions {
-
+@{
+	if (isInitialized)
+	{
+		if (loginFormVisible)
+		{
+			<LoginForm OnSuccess="@OnLoginSuccess"></LoginForm>
+		}
+		else if (IdentityContext.Identity != null)
+		{
+			// If the user is authenticated, invoke the callback
+			// to notify the parent component
+			IsAuthenticated.InvokeAsync();
+		}
+	}
 }
 
 @code {
 	[Parameter]
-	public string RedirectUri { get; set; }
+	public EventCallback IsAuthenticated { get; set; }
+
+	private bool isInitialized = false;
+	private bool loginFormVisible = false;
 
 	protected override async Task OnInitializedAsync()
 	{
+		await IdentityContext.ReceiveIdentityFromServerAsync();
+		if (IdentityContext.Identity == null)
+		{
+			loginFormVisible = true;
+		}
+		isInitialized = true;
+		StateHasChanged();
+	}
 
-		if (await AuthContext.ReceiveIdentityFromServerAsync())
-		{
-			// If the user is authenticated, navigate to the home page
-			if (String.IsNullOrEmpty(RedirectUri)) { Navigation.NavigateTo("/"); }
-			else { Navigation.NavigateTo(RedirectUri); } 
-		}
-		else
-		{
-			// If the user is not authenticated, navigate to the login page
-			Navigation.NavigateTo("/login");
-		}
+	private void OnLoginSuccess()
+	{
+		IsAuthenticated.InvokeAsync();
 	}
 }

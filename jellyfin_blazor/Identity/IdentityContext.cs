@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace jellyfin_blazor.Identity
 {
-    public class AuthenticationContext
+    public class IdentityContext
     {
         private dynamic _authPayload;
         private readonly ILocalStorage _localStorage;
@@ -15,7 +15,7 @@ namespace jellyfin_blazor.Identity
         };
         public dynamic Identity { get; private set; }
 
-        public AuthenticationContext(ILocalStorage localStorage)
+        public IdentityContext(ILocalStorage localStorage)
         {
             _localStorage = localStorage;
         }

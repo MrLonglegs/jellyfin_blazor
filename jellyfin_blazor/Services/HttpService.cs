@@ -7,9 +7,9 @@ namespace jellyfin_blazor.Services
 {
     public class HttpService : HttpClient
     {
-        private readonly AuthenticationContext _authenticationContext;
+        private readonly IdentityContext _authenticationContext;
         private readonly NavigationManager _navigationManager;
-        public HttpService(AuthenticationContext authenticationContext, NavigationManager navigationManager)
+        public HttpService(IdentityContext authenticationContext, NavigationManager navigationManager)
         {
             _authenticationContext = authenticationContext;
             _navigationManager = navigationManager;

@@ -1,0 +1,21 @@
+﻿<div style="grid = @GridType;
+			grid-template-columns = @GridTemplateColums;
+			grid-template-rows = @GridTemplateRows;
+			grid-gap = @GridGap">
+
+			@ChildContent
+</div>
+
+@code {
+	[Parameter]
+	public RenderFragment ChildContent { get; set; }
+
+	[Parameter]
+	public string GridType { get; set; } = "grid";
+	[Parameter]
+	public string GridTemplateColums { get; set; } = "repeat(auto-fill, minmax(0px, 1fr))";
+	[Parameter]
+	public string GridTemplateRows { get; set; } = "repeat(auto-fill, minmax(0px, 1fr))";
+	[Parameter]
+	public string GridGap { get; set; } = "0px";
+}

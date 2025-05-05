@@ -1,0 +1,44 @@
+﻿<div id="Sidebar">
+	<Grid>
+		@foreach (NavMenuItem item in NavMenuItems)
+		{
+			@NavMenuItemTemplate(item)
+		}
+	</Grid>
+</div>
+
+<style>
+	#Sidebar {
+		width: @Width;
+		height: @Height;
+		background-color: @BackgroundColor;
+		color: @FontColor;
+		font-size: @FontSize;
+		border-radius: @BorderRadius;
+		display: grid;
+		grid-template-rows: fit-content(100%);
+		overflow: clip;
+	}
+</style>
+
+@code {
+	[Parameter]
+	public RenderFragment ChildContent { get; set; } = default!;
+	[Parameter]
+	public RenderFragment<NavMenuItem> NavMenuItemTemplate { get; set; } = default!;
+	[Parameter]
+	public IEnumerable<NavMenuItem> NavMenuItems { get; set; } = default!;
+
+	[Parameter]
+	public string Width { get; set; } = "20vh";
+	[Parameter]
+	public string Height { get; set; } = "100%";
+	[Parameter]
+	public string BackgroundColor { get; set; } = "#3b3b3b";
+	[Parameter]
+	public string FontColor { get; set; } = "white";
+	[Parameter]
+	public string FontSize { get; set; } = "20px";
+	[Parameter]
+	public string BorderRadius { get; set; } = "0 0 0 0";
+}

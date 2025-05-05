@@ -9,6 +9,6 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped<ILocalStorage, LocalStorageProvider>();
-builder.Services.AddScoped<AuthenticationContext>();
+builder.Services.AddScoped<IdentityContext>();
 builder.Services.AddScoped<HttpService>();
 await builder.Build().RunAsync();

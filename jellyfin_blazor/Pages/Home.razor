@@ -5,12 +5,14 @@
 
 @inject NavigationManager Navigation
 @inject HttpService Http;
-@inject AuthenticationContext AuthContext
+@inject IdentityContext AuthContext
 
 <PageTitle>Home</PageTitle>
 
-<p>Hello There, @Username</p>
-
+@if (AuthContext.Identity != null)
+{
+	<p>Hello There, @AuthContext.Identity.Name</p>
+}
 @code {
-	string Username { get => AuthContext.Identity?.Name ?? "Guest"; }
+
 }

@@ -2,42 +2,52 @@
 
 @using jellyfin_blazor.Identity
 @using jellyfin_blazor.Services
+@using jellyfin_blazor.Pages
+@using jellyfin_blazor.CustomElements
 
 @inject NavigationManager Navigation
-@inject AuthenticationContext AuthContext
+@inject IdentityContext IdentityContext
 @inject HttpService Http
 
-@{
-	if (AuthContext.Identity == null)
-	{
-		Navigation.NavigateTo($"/_authStateCheck/{@Navigation.ToBaseRelativePath(Navigation.Uri)}", false, true);
-	}
+@if (IdentityContext.Identity == null)
+{
+	<_AuthStateCheck IsAuthenticated="StateHasChanged" />
+	@* This component checks the authentication state and redirects if necessary *@
+	@* It will be rendered until the authentication state is determined *@
+	@* You can customize this component to show a loading spinner or message *@
 }
-
-<div class="Header" id="top">
-	<div style="grid-column: 1; display: flex;">
-		<span class="ApplicationLogo" @onclick=@(() => Navigation.NavigateTo("/"))>Jellyfin Blazor</span>
-	</div>
-	<div style="grid-column: 3;">
-		<div class="Misc">
-			<span class="Box"></span>
+else
+{
+	// Render the main layout if the user is authenticated
+	<div class="Header" id="top">
+		<div style="grid-column: 1; display: flex;">
+			<span class="ApplicationLogo" @onclick=@(() => Navigation.NavigateTo("/"))>Jellyfin Blazor</span>
+		</div>
+		<div style="grid-column: 3;">
+			<div class="Misc">
+				<span class="Avatar" onclick="" />
+			</div>
 		</div>
 	</div>
-</div>
 
-<div style="height: 95vh; display: grid; grid-template-columns: fit-content(100%) auto;">
-	<div id="Sidebar">
+	<div style="height: 95vh; display: grid; grid-template-columns: fit-content(100%) auto;">
+		@* <div id="Sidebar">
 		<div class="NavMenu">
+			<span class="Button" @onclick=@(() => Navigation.NavigateTo("/"))>Home</span>
 			<span class="Button" @onclick=@(() => Navigation.NavigateTo("/series"))>Series</span>
 			<span class="Button" @onclick=@(() => Navigation.NavigateTo("/movies"))>Movies</span>
 		</div>
-	</div>
-	<div style="display: grid; grid-template-columns: fit-content(100%)">
+	</div> *@
+		<Sidebar>
+			<NavMenuItem Content="Home" OnClick=@(() => Navigation.NavigateTo("/")) />
+			<NavMenuItem Content="Series" OnClick=@(() => Navigation.NavigateTo("/series")) />
+			<NavMenuItem Content="Movies" OnClick=@(() => Navigation.NavigateTo("/movies")) />
+		</Sidebar>
 		<div style="margin: 10px">
 			@Body
 		</div>
 	</div>
-</div>
+}
 <style>
 	#Sidebar {
 		width: 20vh;
@@ -53,18 +63,17 @@
 
 		#Sidebar .NavMenu {
 			display: grid;
-			grid-template-rows: repeat(2, 54px);
+			grid-template-rows: auto;
 			text-align: center;
 		}
 
 			#Sidebar .NavMenu .Button {
+				height: 4vh;
 				background-color: transparent;
-				border-radius: 10px;
+				border-radius: 1vh;
 				border-style: none;
-				padding: 0px;
-				margin: 5px 10px;
+				margin: 0.5vh 1vh;
 				box-sizing: border-box;
-				vertical-align: middle;
 				align-content: center;
 				font-size: 20px;
 				font-weight: 200;
@@ -77,9 +86,8 @@
 
 	.Header#top {
 		display: grid;
-		grid-template-columns: 20vh auto auto;
+		grid-template-columns: 20vh auto fit-content(100%);
 		height: 5vh;
-		width: 100vh;
 		background-color: #2e2e2e;
 	}
 
@@ -93,25 +101,34 @@
 		}
 
 	.Header .Misc {
+		height: 100%;
+		width: 100%;
 		display: inline-flex;
 		direction: rtl;
 		vertical-align: middle;
 	}
 
-	.Header .Misc .Box {
-		height: 4%;
-		width: 4%;
-		background-color: red;
-	}
+		.Header .Misc .Avatar {
+			height: 3.5vh;
+			width: 3.5vh;
+			background-color: white;
+			margin: auto;
+			margin-right: 1vh;
+			border-radius: 3.5vh;
+		}
+
+			.Header .Misc .Avatar:hover {
+				cursor: pointer;
+			}
 </style>
 
-@code {
-	protected override async Task OnInitializedAsync()
+@functions {
+	void ShowAvatarDropdown()
 	{
-		if (!(await AuthContext.ReceiveIdentityFromServerAsync()))
-		{
-			// If the user is not authenticated, navigate to the login page
-			Navigation.NavigateTo("/login");
-		}
+
 	}
+}
+
+@code {
+
 }
