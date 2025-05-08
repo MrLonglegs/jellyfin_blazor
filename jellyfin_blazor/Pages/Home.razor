@@ -2,6 +2,7 @@
 
 @using jellyfin_blazor.Services
 @using jellyfin_blazor.Identity
+@using jellyfin_blazor.Components
 
 @inject NavigationManager Navigation
 @inject HttpService Http;
@@ -11,7 +12,9 @@
 
 @if (AuthContext.Identity != null)
 {
-	<p>Hello There, @AuthContext.Identity.Name</p>
+	<div style="display: grid; grid-template-rows: repeat(auto-fill, 1fr)">
+		<ItemsContainer ItemType="Data.ItemType.Movie"/>
+	</div>
 }
 @code {
 

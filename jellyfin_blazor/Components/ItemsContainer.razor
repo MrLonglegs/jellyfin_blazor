@@ -1,0 +1,15 @@
+﻿@if (Items != null && Items.Count > 0)
+{
+	<div class="Container">
+		@foreach (var item in Items)
+		{
+			<ItemCard Data=@item />
+		}
+	</div>
+}
+else
+{
+	<div class="NoItems">
+		<p>No items available.</p>
+	</div>
+}

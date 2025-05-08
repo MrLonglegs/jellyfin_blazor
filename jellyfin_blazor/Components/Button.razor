@@ -1,0 +1,15 @@
+﻿<span @attributes="InputAttributes">
+	@ChildContent
+</span>
+
+@code {
+	[Parameter]
+	public RenderFragment? ChildContent { get; set; }
+
+	[Parameter(CaptureUnmatchedValues = true)]
+	public Dictionary<string, object>? InputAttributes { get; set; }
+
+
+	[Parameter]
+	public EventCallback<MouseEventArgs> OnClick { get; set; }
+}

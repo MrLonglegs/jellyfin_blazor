@@ -3,12 +3,24 @@
 			grid-template-rows = @GridTemplateRows;
 			grid-gap = @GridGap">
 
-			@ChildContent
+	@foreach (var lData in DataSource)
+	{
+		@foreach (var lChild in m_Children)
+		{
+			@lChild(lData)
+		}
+	}
 </div>
 
 @code {
 	[Parameter]
-	public RenderFragment ChildContent { get; set; }
+	public List<dynamic> DataSource { get; set; }
+
+	[Parameter]
+	public RenderFragment<dynamic> ChildFragment { set => m_Children.Add(value); }
+
+	/// Collection of all added child fragments
+	private List<RenderFragment<dynamic>> m_Children = new List<RenderFragment<dynamic>>();
 
 	[Parameter]
 	public string GridType { get; set; } = "grid";

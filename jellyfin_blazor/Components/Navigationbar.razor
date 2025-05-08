@@ -1,0 +1,17 @@
+﻿<div class="navbar" attributes="@InputAttributes">
+	@Header
+
+	@ChildContent
+
+	@Footer
+</div>
+
+@code {
+	[Parameter] public RenderFragment? Header { get; set; }
+	[Parameter] public RenderFragment? ChildContent { get; set; }
+	[Parameter] public RenderFragment? Footer { get; set; }
+	
+
+	[Parameter(CaptureUnmatchedValues = true)]
+	public Dictionary<string, object>? InputAttributes { get; set; }
+}
